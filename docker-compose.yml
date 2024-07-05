@@ -1,0 +1,16 @@
+version: "3.1"
+
+services:
+  postgres:
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: bun_postgres
+      POSTGRES_PASSWORD: bun_postgres
+      POSTGRES_DB: bun_db
+    ports:
+      - "54321:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
