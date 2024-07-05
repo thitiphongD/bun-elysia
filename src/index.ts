@@ -1,37 +1,16 @@
 import { Elysia, t } from "elysia";
-import { swagger } from "@elysiajs/swagger";
-import { Client } from "pg";
 import { cors } from "@elysiajs/cors";
-
-const client = new Client({
-  host: Bun.env.DB_HOST,
-  port: parseInt(Bun.env.DB_PORT || "5432", 10), // Default port 5432 if DB_PORT is undefined
-  user: Bun.env.DB_USER,
-  password: Bun.env.DB_PASSWORD,
-  database: Bun.env.DB_NAME,
-});
-
-const connectDB = async () => {
-  try {
-    await client.connect();
-    console.log("Connected to PostgreSQL successfully");
-  } catch (err) {
-    console.error("Connection error", err);
-    process.exit(1); // Exit the process if connection fails
-  }
-};
-
+import client, { connectDB } from "./db/db";
+import { getAllUsers } from "./controllers/usersController";
 connectDB();
-
 const app = new Elysia();
 app.use(cors());
-
 app.get("/", () => "hello 🦊");
 
 app.get("/users", async () => {
   try {
-    const result = await client.query("SELECT * FROM health_check");
-    return result.rows;
+    const result = await getAllUsers();
+    return result;
   } catch (error) {
     console.error("Error executing PostgreSQL query:", error);
     return "Error";
